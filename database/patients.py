@@ -2,17 +2,21 @@ import pymongo
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import uuid
-from client import getClient
+import os
 
+#TODO add check for same Patient ID
 
 
 class Patient:
     def __init__(self, pid=-1):
+       uri = os.getenv('MONGO_URI')
+       client = MongoClient(uri, server_api=ServerApi('1'))
+
        if pid==-1:
           pid=f"PA{int(uuid.uuid4().int & 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF) % (10**8)}"
        self.pid= pid
     
-       self.client=getClient()
+       self.client=client
        self.db=self.client["COMP413"]
        self.collection=self.db["PatientInfo"]
 
@@ -42,7 +46,7 @@ class Patient:
     
     
 
-    def updatePatientMongo(self, new_visited_date, front_image_link, back_image_link):
+    def updatePatientFront(self, new_visited_date, front_image_link):
         self.collection.update_one(
             {"PatientID": self.pid},
             {
@@ -50,7 +54,20 @@ class Patient:
                 "$set": {
                     f"Photos.{str(new_visited_date)}": {
                         "Front": front_image_link,
-                        "Back": back_image_link
+                      
+                    }
+                }
+            }
+   )
+    def updatePatientBack(self, new_visited_date, back_image_link):
+        self.collection.update_one(
+            {"PatientID": self.pid},
+            {
+                "$addToSet": {"Visited": new_visited_date},
+                "$set": {
+                    f"Photos.{str(new_visited_date)}": {
+                        "Back": back_image_link,
+                      
                     }
                 }
             }
@@ -89,15 +106,17 @@ class Patient:
     
 
 
-newPatient=Patient("PA012345678")
-# newPatient.addNewPatientMongo("Ali Khokhar","Male",20,"Hospital1")
+# newPatient=Patient("PA012345678")
+# # newPatient.addNewPatientMongo("Ali Khokhar","Male",20,"Hospital1")
 
 
-newPatient.updatePatientMongo("2024-02-22","linktofront","linktoback")
+# newPatient.updatePatientMongo("2024-02-22","linktofront","linktoback")
 
 
-print(newPatient.viewPatientInfoMongo())
-print(newPatient.viewPatientMainPicMongo("2024-02-22"))
+# print(newPatient.viewPatientInfoMongo())
+# print(newPatient.viewPatientMainPicMongo("2024-02-22"))
+
+
 
 
 

@@ -2,6 +2,8 @@ from flask import Flask, request, redirect, session, render_template, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from Amazon_s3 import uploadImage
+from database import patients
 import os
 
 
@@ -76,5 +78,29 @@ def logout():
     session.clear()
     return jsonify({"message": "Logged out successfully!"}), 200
 
+
+@app.route("/uploadImage", methods=["POST"])
+def uploadImageS3():
+        
+        img = request.files['file']
+        side=request.get_json().get("side")
+        pid=request.get_json().get("patientID")
+        date=request.get_json().get("date")
+        if img:
+            filename =(img.filename)
+            img.save(filename)
+            succ,e=uploadImage.upload_to_s3(img,side)
+
+            if succ:
+                patient=patients.Patient(pid)
+                if side=='front':
+                    patient.updatePatientFront(date,e)
+                elif side=="back":
+                    patient.updatePatientBack(date,e)
+                
+                return jsonify({'success': 'Image uploaded successfully'}), 200
+            else:
+                return jsonify({'error': str(e)}), 500
+            
 if __name__ == "__main__":
     app.run()
