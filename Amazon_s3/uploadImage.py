@@ -7,6 +7,7 @@ from datetime import datetime
 
 
 
+
 load_dotenv()
 
 s3 = boto3.client(
@@ -16,10 +17,12 @@ s3 = boto3.client(
 )
 
 #@app.route('/upload', methods=['POST'])
-def upload_to_s3(image,side):
+def upload_to_s3(image):
     try:
-        s3.upload_fileobj(image, os.getenv('S3_BUCKET'), datetime.now().strftime('%Y-%m-%d %H:%M:%S')+image.filename)
-        linkName=side+ datetime.now().strftime('%Y-%m-%d %H:%M:%S')+image.filename
+        linkName= datetime.now().strftime('%Y-%m-%d_%H-%M-%S')+image.filename
+        s=s3.upload_fileobj(image, os.getenv('S3_BUCKET'), linkName)
+        
+        print(s)
 
 
         return (True,linkName) # jsonify({'success': 'Image uploaded successfully'}), 200
@@ -27,3 +30,11 @@ def upload_to_s3(image,side):
     except Exception as e:
         return  (False,e)# jsonify({'error': str(e)}), 500
     
+def get_image_s3(image_name):
+    response = s3.get_object(
+    Bucket=os.getenv("S3_BUCKET"),
+    Key=image_name)
+    print("in s3", type(response))
+
+    return response
+

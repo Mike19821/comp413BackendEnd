@@ -89,7 +89,7 @@ def uploadImageS3():
         if img:
             filename =(img.filename)
             img.save(filename)
-            succ,e=uploadImage.upload_to_s3(img,side)
+            succ,e=uploadImage.upload_to_s3(img)
 
             if succ:
                 patient=patients.Patient(pid)
