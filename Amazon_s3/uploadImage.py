@@ -23,9 +23,11 @@ def upload_to_s3(image):
         s=s3.upload_fileobj(image, os.getenv('S3_BUCKET'), linkName)
         
         print(s)
+        
 
 
-        return (True,linkName) # jsonify({'success': 'Image uploaded successfully'}), 200
+
+        return (True,linkName)
 
     except Exception as e:
         return  (False,e)# jsonify({'error': str(e)}), 500

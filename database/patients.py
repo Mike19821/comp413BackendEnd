@@ -99,11 +99,9 @@ class Patient:
           print("Patient not found")
       patientReturn=patientData["Photos"][date]
 
-      if patientReturn["Front"] and patientReturn["Back"]:
-          return (patientReturn)
-      else:
-         return False   
-    
+      
+      return (patientReturn)
+ 
 
 
 # newPatient=Patient("PA012345678")
