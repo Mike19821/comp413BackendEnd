@@ -3,70 +3,11 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from Amazon_s3 import uploadImage
-from database import patients
+from database import patients, doctors, nurse
 import os
 
 
 app = Flask(__name__)
-
-
-
-# Register
-# @app.route("/register", methods=["POST"])
-# def register():
-#     data = request.get_json()
-#     email = data.get("email")
-#     password = data.get("password")
-#     confirmation = data.get("confirmation")
-
-#     if not email or not password or not confirmation:
-#         return jsonify({"error": "Please fill out all fields"}), 400
-
-#     if password != confirmation:
-#         return jsonify({"error": "Password confirmation doesn't match password"}), 400
-
-#     exist = users_collection.find_one({"email": email})
-
-#     if exist:
-#         return jsonify({"error": "User already registered"}), 400
-
-#     # use PBKDF2 with the SHA-256 hash function to securely hash passwords.
-#     pwhash = generate_password_hash(password, method="pbkdf2:sha256", salt_length=8)
-
-#     users_collection.insert_one({"email": email, "password": pwhash})
-
-#     return jsonify({"message": "Registered successfully!"}), 201
-
-
-# #Login
-# @app.route("/login", methods=["POST"])
-# def login():
-#     data = request.get_json()
-#     email = data.get("email")
-#     password = data.get("password")
-
-#     if not email or not password:
-#         return jsonify({"error": "Please fill out all required fields"}), 400
-
-#     user = users_collection.find_one({"email": email})
-
-#     if not user:
-#         return jsonify({"error": "You didn't register"}), 404
-
-#     if not check_password_hash(user["password"], password):
-#         return jsonify({"error": "Wrong password"}), 401
-
-#     session["user_id"] = str(user["_id"])
-
-#     return jsonify({"message": "Logged in successfully!"}), 200
-
-
-
-# # Logout
-# @app.route("/logout", methods=["POST"])
-# def logout():
-#     session.clear()
-#     return jsonify({"message": "Logged out successfully!"}), 200
 
 
 @app.route("/uploadImage", methods=["POST"])
@@ -107,7 +48,7 @@ def getImageS3():
              if side =="front":
                   toGet=photos["Front"]
                   resp=uploadImage.get_image_s3(toGet)
-                  return send_file(resp["Body"], mimetype='image/jpeg')
+                  return send_file(resp["Body"], mimetype='image/jpeg'),200
 
                   
 
@@ -115,15 +56,45 @@ def getImageS3():
                   toGet=photos["Back"]
                   resp=uploadImage.get_image_s3(toGet)
                   print(resp["Body"])
-                  return send_file(resp["Body"], mimetype='image/jpeg')
+                  return send_file(resp["Body"], mimetype='image/jpeg'),200
         else:
-             return jsonify({'error': str("error")}), 500
-                  
-                  
+             return jsonify({'error': str("error")}), 400
+@app.route("/patientInfo", methods=["GET"])                
+def getPatientInfo():
+     pid = request.form.get("patientID") 
+     if pid:
+          patient=patients.Patient(pid)
+          patientInfo=patient.viewPatientInfoMongo()
+          if patientInfo!={}:
+               return jsonify (patientInfo),200
+          else:
+               return jsonify ("Patient Not Found"),500
+     else:
+          return jsonify({'error': str("error")}), 500
 
+@app.route("/viewmyPatients", methods=["GET"])
+def getPatients():
+     idn = request.form.get("ID") 
+     if idn[0]=='D':
+          doc=doctors.Doctor(idn)
+          info=doc.getInfo()
+          patients=info['Patients']
+     elif idn[0]=='N':
+          nu=nurse.Nurse(idn)
+          info=nu.getInfo()
+          if info['Registered']==False:
+               return 'nurse not reg'
+               
+          patients=info['Patients']
+     else:
+          return 'id invalid'
+     return patients
 
+    
 
-
+          
+          
+     
 
 if __name__ == "__main__":
     app.run()
