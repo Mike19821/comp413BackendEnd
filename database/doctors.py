@@ -18,9 +18,21 @@ class Doctor:
     
     def getInfo(self):
        doctorInfo=self.collection.find_one({"DoctorID":self.did})
-       
+       print(doctorInfo)
        return doctorInfo
     
+    def checkPatient(self,PatientID):
+       doctorInfo=self.collection.find_one({"DoctorID":self.did})
+       patients=doctorInfo["Patients"]
+       if PatientID in patients.keys():
+          return True
+       else:
+          return False
+       
+       
+       
+       
+       
        
 
 

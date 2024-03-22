@@ -2,6 +2,7 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import uuid
 import os
+from database import patients
 
 class Nurse:
     def __init__(self, did=-1):
@@ -18,6 +19,24 @@ class Nurse:
     
     def getInfo(self):
        NInfo=self.collection.find_one({"NurseID":self.did})
+       print(NInfo)
        
        
        return NInfo
+    
+    def addPatient(self, patientID):
+       nMongo=self.collection.find_one({"NurseID":self.did})
+       currP=nMongo.get("Patients",{})
+       patient=patients.Patient(patientID)
+       currP[patientID]=patient.getMongoPatient()['Name']
+       
+       
+       return self.collection.update_one(
+        {"NurseID": self.did},
+        {"$set": {"Patients": currP}}
+    )
+        
+      
+
+   
+       

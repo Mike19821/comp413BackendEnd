@@ -78,7 +78,7 @@ def generate_random_patient_mapping():
     
     random_patients = random.sample(list(patient_collection.find()), k=random.randint(1, 10))
     for patient in random_patients:
-        patient_mapping[patient["Name"]] = patient["PatientID"]
+        patient_mapping[patient["PatientID"]] = patient["Name"]
     return patient_mapping
 num_doctor_records = 10
 num_nurse_records=30

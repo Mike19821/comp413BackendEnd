@@ -16,7 +16,7 @@ s3 = boto3.client(
    aws_secret_access_key=os.getenv('S3_SECRET_ACCESS_KEY')
 )
 
-#@app.route('/upload', methods=['POST'])
+
 def upload_to_s3(image):
     try:
         linkName= datetime.now().strftime('%Y-%m-%d_%H-%M-%S')+image.filename

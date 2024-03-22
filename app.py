@@ -90,6 +90,46 @@ def getPatients():
           return 'id invalid'
      return patients
 
+@app.route("/assignNurse", methods=["POST"])
+def assignNurse():
+     patientID=request.form.get("patientID")
+     nurseID=request.form.get("nurseID")
+     docID=request.form.get("docID")
+     doc=doctors.Doctor(docID)
+     nur=nurse.Nurse(nurseID)
+     patient=patients.Patient(patientID)
+
+
+     if nur.getInfo()["Hospital"]==patient.viewPatientInfoMongo()["Hospital"] and nur.getInfo()["Hospital"]==doc.getInfo()["Hospital"]:
+          if doc.checkPatient(patientID):
+               b=nur.addPatient(patientID)
+               if b:
+                    return jsonify ("Added Patient"),200
+               else:
+                    return jsonify ("Server Error"),500
+                    
+          else:
+               return jsonify ("Doc doesnt have patient"),400
+     else:
+          return jsonify ("Different Hospitals"),401
+
+               
+               
+               
+               
+          
+          
+          
+
+
+     
+@app.route("/outsourceDoc", methods=["GET"])
+def sendConsent():
+     currDoc=request.form.get("docID")
+     newDoc=request.form.get("newDoc")
+     patient=request.form.get("patientID")
+
+
     
 
           

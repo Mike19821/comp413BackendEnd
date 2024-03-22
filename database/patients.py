@@ -101,6 +101,13 @@ class Patient:
 
       
       return (patientReturn)
+    
+    def getObjID(self):
+       patientData = self.collection.find_one({"PatientID":self.pid})
+       return patientData['_id']
+    def getMongoPatient(self):
+       return self.collection.find_one({"PatientID":self.pid})
+       
  
 
 
