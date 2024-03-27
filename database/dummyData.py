@@ -37,7 +37,9 @@ def generate_dummy_patient_data():
         "Age": fake.random_int(min=18, max=70),
         "Visited": [datetime.combine(fake.date_between('-1y', 'today'), time.min) for _ in range(fake.random_int(min=1, max=10))],
         "Photos": {str(date): {"Front": f"url_to_front_image_{date}", "Back": f"url_to_back_image_{date}"} for date in visited_dates},
-        "Hospital": random.choice(["Hospital1","Hospital2"])
+        "Hospital": random.choice(["Hospital1","Hospital2"]),
+        "Messages": [],
+        "NewMessages": []
     }
 
 def generate_dummy_doctor_data():
@@ -52,7 +54,8 @@ def generate_dummy_doctor_data():
         "Password": password,
         "Name": fake.name(),
         "Patients": generate_random_patient_mapping(),
-        "Hospital": random.choice(["Hospital1","Hospital2"])
+        "Hospital": random.choice(["Hospital1","Hospital2"]),
+        "Consent":[]
     }
 
 def generate_dummy_nurse_data():
@@ -86,9 +89,9 @@ num_patient_records = 100
 num_phys_records=20
 
 
-# for _ in range(num_patient_records):
-#     patient_data = generate_dummy_patient_data()
-#     patient_collection.insert_one(patient_data)
+for _ in range(num_patient_records):
+    patient_data = generate_dummy_patient_data()
+    patient_collection.insert_one(patient_data)
 
 print("added patient data")
 for _ in range(num_doctor_records):
@@ -100,3 +103,4 @@ for _ in range(num_nurse_records):
     nurse_data = generate_dummy_nurse_data()
     nurse_collection.insert_one(nurse_data)
 print("added nurse data")
+

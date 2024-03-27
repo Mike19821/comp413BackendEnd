@@ -112,22 +112,54 @@ def assignNurse():
                return jsonify ("Doc doesnt have patient"),400
      else:
           return jsonify ("Different Hospitals"),401
-
-               
-               
-               
-               
-          
-          
-          
-
-
      
-@app.route("/outsourceDoc", methods=["GET"])
-def sendConsent():
+@app.route("/askConsent", methods=["POST"])
+def askConsent():
      currDoc=request.form.get("docID")
      newDoc=request.form.get("newDoc")
      patient=request.form.get("patientID")
+     Cdoc=doctors.Doctor(str(currDoc))
+     nDoc=doctors.Doctor(str(newDoc))
+     patient=patients.Patient(str(patient))
+     CdocName=Cdoc.getInfo()["Name"]
+     NdocName=nDoc.getInfo()["Name"]
+     NdocHospital=nDoc.getInfo()["Hospital"]
+     patientName=patient.viewPatientInfoMongo()["Name"]
+     message=f"Hey {patientName}! Dr.{CdocName} wants to consult your images with Dr.{NdocName} from Hospital {NdocHospital}, Click 'Yes' to agree and consent or click 'No' otherwise "
+     try:
+          patient.addMsg(message)
+          
+     except Exception as e:
+          return jsonify(str(e)),500
+     return jsonify ("Consent Sent"),200
+
+# @app.route("/sendConsent", methods=["POST"])
+# def sendConsent():
+#      newDoc=request.form.get("newDoc")
+#      patientID=request.form.get("patientID")
+#      consent=request.form.get("Consent")
+#      nDoc=doctors.Doctor(str(newDoc))
+#      patient=patients.Patient(str(patientID))
+#      patientName=patient.viewPatientInfoMongo()["Name"]
+
+#      if consent=='True':
+
+@app.route("/test", methods=["GET"])
+def test():
+     patient=request.form.get("patientID")
+     patient=patients.Patient(str(patient))
+     return jsonify(patient.viewPatientInfoMongo())
+
+
+     
+
+
+
+
+
+     
+
+
 
 
     

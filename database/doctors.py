@@ -18,7 +18,7 @@ class Doctor:
     
     def getInfo(self):
        doctorInfo=self.collection.find_one({"DoctorID":self.did})
-       print(doctorInfo)
+       
        return doctorInfo
     
     def checkPatient(self,PatientID):

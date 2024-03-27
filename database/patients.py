@@ -84,6 +84,7 @@ class Patient:
             patientReturn["Age"]=patientData["Age"]
             patientReturn["Visited"]=patientData["Visited"]
             patientReturn["Hospital"]=patientData["Hospital"]
+            patientReturn["Password"]=patientData["Password"]
 
 
         else:
@@ -109,7 +110,17 @@ class Patient:
        return self.collection.find_one({"PatientID":self.pid})
        
  
-
+    def addMsg(self,message):
+       try:
+          self.collection.update_one({"PatientID": self.pid},
+                                  {'$push':{'Messages':message}}
+                                  
+                                  )
+          return ("Success")
+       except Exception as e:
+          return (e)
+       
+       
 
 # newPatient=Patient("PA012345678")
 # # newPatient.addNewPatientMongo("Ali Khokhar","Male",20,"Hospital1")
