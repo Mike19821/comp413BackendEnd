@@ -4,10 +4,13 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 from Amazon_s3 import uploadImage
 from database import patients, doctors, nurse
-import os
+import jwt
+import datetime
 
 
 app = Flask(__name__)
+client = MongoClient('mongodb+srv://jw142:<password>@cluster0.dew2egn.mongodb.net/')
+db = client['COMP413']
 
 
 @app.route("/uploadImage", methods=["POST"])
@@ -118,6 +121,7 @@ def askConsent():
      currDoc=request.form.get("docID")
      newDoc=request.form.get("newDoc")
      patient=request.form.get("patientID")
+<<<<<<< HEAD
      Cdoc=doctors.Doctor(str(currDoc))
      nDoc=doctors.Doctor(str(newDoc))
      patient=patients.Patient(str(patient))
@@ -162,11 +166,28 @@ def test():
 
 
 
+=======
+>>>>>>> a2e11cfbd542e363512034112ea3d4a0269cd17b
     
 
-          
-          
-     
+@app.route('/login', methods=['POST'])
+def login_user():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    user_collection = db['DoctorInfo']
+
+    user = user_collection.find_one({'username': username})
+    
+    if user and check_password_hash(user['password'], password):
+        token = jwt.encode({
+            'public_id': str(user['_id']),
+            'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
+        }, app.config['SECRET_KEY'])
+        
+        return jsonify({'token': token.decode('UTF-8')}), 200
+    else:
+        return jsonify({'message': 'Invalid username or password'}), 401
+
 
 if __name__ == "__main__":
     app.run()
