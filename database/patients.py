@@ -84,7 +84,7 @@ class Patient:
             patientReturn["Age"]=patientData["Age"]
             patientReturn["Visited"]=patientData["Visited"]
             patientReturn["Hospital"]=patientData["Hospital"]
-            patientReturn["Password"]=patientData["Password"]
+            
 
 
         else:
@@ -119,6 +119,10 @@ class Patient:
           return ("Success")
        except Exception as e:
           return (e)
+    
+    def ifExist(self):
+       return self.collection.find_one({"PatientID": self.pid})
+       
        
        
 
