@@ -29,9 +29,10 @@ def login_user():
             'public_id': str(user['_id']),
             'exp' : datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=30)
         },"secret",algorithm="HS256")
-         return jsonify({'token': jwt.decode(token,"secret",algorithms=["HS256"])}), 200
-    else:
-        return jsonify({'message': 'Invalid username or password'}), 401
+              return jsonify({'token': jwt.decode(token,"secret",algorithms=["HS256"])}), 200
+         else:
+              return jsonify({'message': 'Invalid  password'}), 401
+    return jsonify({'message': 'Invalid username'}), 402
 
 
 
