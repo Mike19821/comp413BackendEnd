@@ -70,9 +70,9 @@ def uploadImageS3():
 
 @app.route("/getImage", methods=["POST"])
 def getImageS3():
-        side = request.json.get("side")
-        pid = request.json.get("patientID")
-        date = request.json.get("date")
+        side = request.form.get("side")
+        pid = request.form.get("patientID")
+        date = request.form.get("date")
         print(side)
         print(pid)
         print(date)
@@ -81,14 +81,14 @@ def getImageS3():
              
              patient=patients.Patient(pid)
              photos=patient.viewPatientMainPicMongo(date)
-             if side =="Front":
+             if side =="front":
                   toGet=photos["Front"]
                   resp=uploadImage.get_image_s3(toGet)
                   return send_file(resp["Body"], mimetype='image/jpeg'),200
 
                   
 
-             elif side =="Back":
+             elif side =="back":
                   toGet=photos["Back"]
                   resp=uploadImage.get_image_s3(toGet)
                   print(resp["Body"])
