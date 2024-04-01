@@ -9,13 +9,16 @@ import datetime
 
 
 app = Flask(__name__)
-client = MongoClient('mongodb+srv://jw142:<password>@cluster0.dew2egn.mongodb.net/')
-db = client['COMP413']
+# client = MongoClient('mongodb+srv://jw142:<password>@cluster0.dew2egn.mongodb.net/')
+# db = client['COMP413']
 
 @app.route('/login', methods=['POST'])
 def login_user():
-    username = request.form.get('username')
-    password = request.form.get('password')
+    
+    username = request.json.get('username')
+    password = request.json.get('password')
+    print("users" + username)
+    print("passss" + password)
     if username[0]=='P':
          curr=patients.Patient(username)
     elif username[0]=='D': 
@@ -24,6 +27,7 @@ def login_user():
          curr=nurse.Nurse(username) 
     user=curr.ifExist()
     if user:
+         print("safasdfas"+ user['Password'])
          if password==user['Password']:
               token = jwt.encode({
             'public_id': str(user['_id']),
@@ -39,14 +43,15 @@ def login_user():
 @app.route("/uploadImage", methods=["POST"])
 def uploadImageS3():
         
-        
         img = request.files['file']
         side = request.form.get("side")
         pid = request.form.get("patientID")
         date = request.form.get("date")
-
+        print(img)
+        print(side)
+        print(pid)
+        print(date)
         if img:
-            
             
             succ,e=uploadImage.upload_to_s3(img)
 
@@ -61,33 +66,37 @@ def uploadImageS3():
             else:
                 return jsonify({'error': str(e)}), 500
 
-@app.route("/getImage", methods=["GET"])
+@app.route("/getImage", methods=["POST"])
 def getImageS3():
-        side = request.form.get("side")
-        pid = request.form.get("patientID")
-        date = request.form.get("date")
+        side = request.json.get("side")
+        pid = request.json.get("patientID")
+        date = request.json.get("date")
+        print(side)
+        print(pid)
+        print(date)
 
         if side and pid and date:
              
              patient=patients.Patient(pid)
              photos=patient.viewPatientMainPicMongo(date)
-             if side =="front":
+             if side =="Front":
                   toGet=photos["Front"]
                   resp=uploadImage.get_image_s3(toGet)
                   return send_file(resp["Body"], mimetype='image/jpeg'),200
 
                   
 
-             elif side =="back":
+             elif side =="Back":
                   toGet=photos["Back"]
                   resp=uploadImage.get_image_s3(toGet)
                   print(resp["Body"])
                   return send_file(resp["Body"], mimetype='image/jpeg'),200
         else:
              return jsonify({'error': str("error")}), 400
-@app.route("/patientInfo", methods=["GET"])                
+@app.route("/patientInfo", methods=["POST"])                
 def getPatientInfo():
-     pid = request.form.get("patientID") 
+     pid = request.json.get("patientID")
+     print(pid)
      if pid:
           patient=patients.Patient(pid)
           patientInfo=patient.viewPatientInfoMongo()
