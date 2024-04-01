@@ -19,11 +19,15 @@ def login_user():
     password = request.json.get('password')
     print("users" + username)
     print("passss" + password)
+    
     if username[0]=='P':
          curr=patients.Patient(username)
-    elif username[0]=='D': 
+         typeL='patient'
+    elif username[0]=='D':
+         typeL='doctor'
          curr=doctors.Doctor(username)
     elif username[0]=='N':
+         typeL='nurse'
          curr=nurse.Nurse(username) 
     user=curr.ifExist()
     if user:
@@ -33,7 +37,7 @@ def login_user():
             'public_id': str(user['_id']),
             'exp' : datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=30)
         },"secret",algorithm="HS256")
-              return jsonify({'token': jwt.decode(token,"secret",algorithms=["HS256"])}), 200
+              return jsonify({'token': jwt.decode(token,"secret",algorithms=["HS256"]),'type':typeL}), 200
          else:
               return jsonify({'message': 'Invalid  password'}), 401
     return jsonify({'message': 'Invalid username'}), 402
@@ -70,9 +74,9 @@ def uploadImageS3():
 
 @app.route("/getImage", methods=["POST"])
 def getImageS3():
-        side = request.form.get("side")
-        pid = request.form.get("patientID")
-        date = request.form.get("date")
+        side = request.json.get("side")
+        pid = request.json.get("patientID")
+        date = request.json.get("date")
         print(side)
         print(pid)
         print(date)
