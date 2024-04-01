@@ -53,8 +53,10 @@ def uploadImageS3():
             if succ:
                 patient=patients.Patient(pid)
                 if side=='front':
+                    print(e+"front e")
                     patient.updatePatientFront(date,e)
                 elif side=="back":
+                    print(e+"back e")
                     patient.updatePatientBack(date,e)
                 print(e)
                 return jsonify({'success': 'Image uploaded successfully' }), 200
@@ -157,18 +159,24 @@ def askConsent():
           
      except Exception as e:
           return jsonify(str(e)),500
-     return jsonify ("Consent Sent"),200
+     return jsonify ("Consent Request Sent"),200
 
-# @app.route("/sendConsent", methods=["POST"])
-# def sendConsent():
-#      newDoc=request.form.get("newDoc")
-#      patientID=request.form.get("patientID")
-#      consent=request.form.get("Consent")
-#      nDoc=doctors.Doctor(str(newDoc))
-#      patient=patients.Patient(str(patientID))
-#      patientName=patient.viewPatientInfoMongo()["Name"]
+@app.route("/sendConsent", methods=["POST"])
+def sendConsent():
+     newDoc=request.form.get("newDoc")
+     patientID=request.form.get("patientID")
+     consent=request.form.get("Consent")
+     nDoc=doctors.Doctor(str(newDoc))
+     patient=patients.Patient(str(patientID))
+     patientName=patient.viewPatientInfoMongo()["Name"]
 
-#      if consent=='True':
+     if consent=='True':
+          nDoc.assignPatientNewDoc(patientID,patientName)
+          return jsonify ("User Consented to Doctor"),200
+     else:
+          return jsonify ("User Did not consented to Doctor"),200
+
+
 
 @app.route("/test", methods=["GET"])
 def test():
