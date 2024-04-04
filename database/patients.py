@@ -3,6 +3,7 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import uuid
 import os
+import certifi
 
 #TODO add check for same Patient ID
 
@@ -10,7 +11,7 @@ import os
 class Patient:
     def __init__(self, pid=-1):
        uri = os.getenv('MONGO_URI')
-       client = MongoClient(uri, server_api=ServerApi('1'))
+       client = MongoClient(uri, tlsCAFile=certifi.where())
 
        if pid==-1:
           pid=f"PA{int(uuid.uuid4().int & 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF) % (10**8)}"
