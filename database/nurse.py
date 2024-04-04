@@ -37,6 +37,7 @@ class Nurse:
     )
         
       
-
+    def ifExist(self):
+       return self.collection.find_one({"NurseID": self.did})
    
        

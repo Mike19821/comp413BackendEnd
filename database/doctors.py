@@ -1,5 +1,6 @@
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+# from patients import Patient
 import uuid
 import os
 
@@ -28,6 +29,20 @@ class Doctor:
           return True
        else:
           return False
+       
+    def assignPatientNewDoc(self, PatientID, PatientName):
+       patientMapping={PatientID:PatientName}
+       doctorInfo=self.collection.find_one({"DoctorID":self.did})
+
+    def ifExist(self):
+       return self.collection.find_one({"DcotorID": self.did})
+       
+       
+       
+       
+       
+       
+   
        
        
        
