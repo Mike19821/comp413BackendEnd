@@ -112,6 +112,21 @@ def getPatientInfo():
                return jsonify ("Patient Not Found"),500
      else:
           return jsonify({'error': str("error")}), 500
+     
+@app.route("/doctorInfo", methods=["POST"])                
+def getPatientInfo():
+     pid = request.json.get("docID")
+     print(pid)
+     if pid:
+          doc=doctors.Doctor(pid)
+          drInfo=doc.getInfo()
+          
+          if drInfo!={}:
+               return jsonify (drInfo),200
+          else:
+               return jsonify ("Dcotor Not Found"),500
+     else:
+          return jsonify({'error': str("error")}), 500
 
 @app.route("/viewmyPatients", methods=["GET"])
 def getPatients():
