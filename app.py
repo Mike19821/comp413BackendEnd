@@ -114,7 +114,7 @@ def getPatientInfo():
           return jsonify({'error': str("error")}), 500
      
 @app.route("/doctorInfo", methods=["POST"])                
-def getPatientInfo():
+def getDoctorInfo():
      pid = request.json.get("docID")
      print(pid)
      if pid:

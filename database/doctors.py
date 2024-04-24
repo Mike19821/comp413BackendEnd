@@ -20,6 +20,20 @@ class Doctor:
     
     def getInfo(self):
        doctorInfo=self.collection.find_one({"DoctorID":self.did})
+       drReturn={} 
+       if doctorInfo:
+         drReturn["Pid"]=doctorInfo["DoctorID"]
+         drReturn["Name"]=doctorInfo["Name"]
+         drReturn["Sex"]=doctorInfo["Sex"]
+         drReturn["Age"]=doctorInfo["Age"]
+         drReturn["Patients"]=doctorInfo["Hospital"]
+         drReturn["Hospital"]=doctorInfo["Hospital"]
+            
+
+
+       else:
+            print("Patient not found.")
+       return drReturn
        
        return doctorInfo
     
