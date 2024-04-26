@@ -30,29 +30,13 @@ This repository contains the backend codebase for our cross-platform mobile appl
 1. Clone the repository:
 
 ```
-git clone https://github.com/your-username/mobile-app-backend.git
+[git clone https://github.com/your-username/mobile-app-backend.git](https://github.com/Mike19821/comp413BackendEnd.git)
 ```
 
 2. Navigate to the project directory:
 
 ```
-cd mobile-app-backend
-```
-
-3. Create a virtual environment and activate it:
-
-```
-python -m venv env
-source env/bin/activate  # On Windows, use `env\Scripts\activate`
-```
-
-4. Install the required dependencies:
-
-```
-pip install -r requirements.txt
-```
-
-5. Set up the environment variables:
+3. Set up the environment variables:
 
 ```
 export FLASK_APP=app.py
